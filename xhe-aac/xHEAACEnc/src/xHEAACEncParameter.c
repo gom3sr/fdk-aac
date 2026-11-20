@@ -174,6 +174,7 @@ static IIS_XHEAACENC_RETURN_CODE IIS_xHEAACEnc_AddParam(
       case IIS_XHEAACENC_PARAMETER_CHANNELCONFIG:
       case IIS_XHEAACENC_PARAMETER_TRANSPORTFORMAT:
       case IIS_XHEAACENC_PARAMETER_RAP_INTERVAL_MS:
+      case IIS_XHEAACENC_PARAMETER_DRC_MODE:
 
       case IIS_XHEAACENC_PARAMETER_RAP_OCCURRENCE:
       case IIS_XHEAACENC_PARAMETER_STREAMID:
@@ -186,6 +187,7 @@ static IIS_XHEAACENC_RETURN_CODE IIS_xHEAACEnc_AddParam(
         break;
 
       case IIS_XHEAACENC_PARAMETER_LIVE_LOUDNESS_LEVEL:
+      case IIS_XHEAACENC_PARAMETER_LOUDNESS_LEVEL:
         if (paramFormat == IIS_XHEAACENC_PARAM_FLOAT) {
           paramAdd.paramFormat = PARAM_FLOAT;
         } else {
@@ -740,6 +742,7 @@ int IIS_xHEAACEnc_Config_FinalizeCB(
           }
           break;
         case IIS_XHEAACENC_PARAMETER_LIVE_LOUDNESS_LEVEL:
+        case IIS_XHEAACENC_PARAMETER_LOUDNESS_LEVEL:
           if (hParam->paramValue._float > -10.0f || hParam->paramValue._float < -31.0f) {
             hParam->paramValue._float = 1.0f;
             hInfo->returnError = IIS_XHEAACENC_ERROR_PARAM_LIVELOUDNESSLEVEL;
@@ -751,6 +754,21 @@ int IIS_xHEAACEnc_Config_FinalizeCB(
             hParam->paramValue._int = -1;
             hInfo->returnError = IIS_XHEAACENC_ERROR_PARAM_LIVEMODE;
             break;
+          }
+          break;
+
+        case IIS_XHEAACENC_PARAMETER_DRC_MODE:
+          switch (hParam->paramValue._int) {
+            case IIS_XHEAACENC_DRC_MODE_OFF:
+              hParam->paramValue._int = PARAMLIST_DRCMODE_OFF;
+              break;
+            case IIS_XHEAACENC_DRC_MODE_DEFAULT:
+              hParam->paramValue._int = PARAMLIST_DRCMODE_LN_NE_LI_GE_LRACONTROL;
+              break;
+            default:
+              hParam->paramValue._int = PARAMLIST_DRCMODE_INVALID;
+              hInfo->returnError = IIS_XHEAACENC_ERROR_PARAM_DRCMODE;
+              break;
           }
           break;
 
@@ -1319,6 +1337,12 @@ int IIS_xHEAACEnc_MapParamListToInternCB(
       case IIS_XHEAACENC_PARAMETER_LIVE_MODE:
         hParam->paramTag = PARAMLIST_PARAMETER_LIVE_MODE;
         break;
+      case IIS_XHEAACENC_PARAMETER_LOUDNESS_LEVEL:
+        hParam->paramTag = PARAMLIST_PARAMETER_LOUDNESS_LEVEL;
+        break;
+      case IIS_XHEAACENC_PARAMETER_DRC_MODE:
+        hParam->paramTag = PARAMLIST_PARAMETER_DRC_MODE;
+        break;
 
       case IIS_XHEAACENC_PARAMETER_INVALID:
       default:
@@ -1463,6 +1487,9 @@ int IIS_xHEAACEnc_MapParamListToAPICB(
         break;
       case PARAMLIST_PARAMETER_LIVE_MODE:
         hParam->paramTag = IIS_XHEAACENC_PARAMETER_LIVE_MODE;
+        break;
+      case PARAMLIST_PARAMETER_LOUDNESS_LEVEL:
+        hParam->paramTag = IIS_XHEAACENC_PARAMETER_LOUDNESS_LEVEL;
         break;
 
       default:
