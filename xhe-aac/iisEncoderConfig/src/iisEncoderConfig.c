@@ -1242,7 +1242,8 @@ static ENCODERCONFIG_RETURN_CODE iisEncoderConfigSanityCheck(
       }
     }
 
-    if (!isError(retError) && disableLoudness != PARAMLIST_DISABLELOUDNESS_ON) {
+    if (!isError(retError) && disableLoudness != PARAMLIST_DISABLELOUDNESS_ON &&
+        drcMode != PARAMLIST_DRCMODE_OFF) {
       if (loudnessLevelSet != 1 && loudnessLevelMeasuredSet != 1 && anchorLoudnessLevelSet != 1 && bMpeg4ProgRefLevelSet != 1 && anchorLoudnessLevelMeasuredSet != 1 && liveLoudnessLevelSet != 1) {
         retError = ENCODERCONFIG_ERROR_NO_LOUDNESS_PROVIDED;
       }
@@ -2453,7 +2454,11 @@ static ENCODERCONFIG_RETURN_CODE iisEncoderConfigSetDefaultParameters(
   if (!isError(retError)) {
     if (disableLoudness == PARAMLIST_DISABLELOUDNESS_INVALID) {
       if (cfgAot == PARAMLIST_AOT_42) {
-        disableLoudness = PARAMLIST_DISABLELOUDNESS_OFF;
+        if (drcMode == PARAMLIST_DRCMODE_OFF) {
+          disableLoudness = PARAMLIST_DISABLELOUDNESS_ON;
+        } else {
+          disableLoudness = PARAMLIST_DISABLELOUDNESS_OFF;
+        }
       } else {
         if (loudnessLevelSet || bMpeg4ProgRefLevelSet || loudnessLevelMeasuredSet || anchorLoudnessLevelSet || anchorLoudnessLevelMeasuredSet || liveLoudnessLevelSet) {
           disableLoudness = PARAMLIST_DISABLELOUDNESS_OFF;
