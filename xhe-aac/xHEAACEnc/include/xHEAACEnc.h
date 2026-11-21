@@ -485,6 +485,16 @@ typedef enum {
 } IIS_XHEAACENC_RAP_OCCURRENCE;
 
 /**********************************************************************/ /**
+ DRC mode selector controls whether MPEG-D DRC metadata is written
+ into the encoded bitstream.
+ **************************************************************************/
+typedef enum {
+  IIS_XHEAACENC_DRC_MODE_INVALID = -1,                            /**< Invalid DRC mode */
+  IIS_XHEAACENC_DRC_MODE_OFF = 0,                                 /**< Disable MPEG-D DRC metadata (uniDrcConfig and loudnessInfoSet) in the stream */
+  IIS_XHEAACENC_DRC_MODE_DEFAULT = 1                              /**< Enable MPEG-D DRC metadata using the default DRC mode (LN_NE_LI_GE_LRACONTROL) */
+} IIS_XHEAACENC_DRC_MODE;
+
+/**********************************************************************/ /**
  The encoder state defines in which state the xHE-AAC encoder is currently.
  **************************************************************************/
 typedef enum {
@@ -765,6 +775,13 @@ typedef enum {
    *  - Access: read-write
    */
   IIS_XHEAACENC_PARAMETER_LIVE_MODE = 1410,
+
+  /** DRC mode selector
+   *  - Type: (IIS_XHEAACENC_PARAM_INT)
+   *  - Value: Defined in IIS_XHEAACENC_DRC_MODE
+   *  - Access: read-write
+   */
+  IIS_XHEAACENC_PARAMETER_DRC_MODE = 1420,
 
   /** last parameter indicator
    *  - Access: not to be used
