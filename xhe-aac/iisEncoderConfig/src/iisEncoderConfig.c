@@ -2453,7 +2453,11 @@ static ENCODERCONFIG_RETURN_CODE iisEncoderConfigSetDefaultParameters(
   if (!isError(retError)) {
     if (disableLoudness == PARAMLIST_DISABLELOUDNESS_INVALID) {
       if (cfgAot == PARAMLIST_AOT_42) {
-        disableLoudness = PARAMLIST_DISABLELOUDNESS_OFF;
+        if (drcMode == PARAMLIST_DRCMODE_OFF) {
+          disableLoudness = PARAMLIST_DISABLELOUDNESS_ON;
+        } else {
+          disableLoudness = PARAMLIST_DISABLELOUDNESS_OFF;
+        }
       } else {
         if (loudnessLevelSet || bMpeg4ProgRefLevelSet || loudnessLevelMeasuredSet || anchorLoudnessLevelSet || anchorLoudnessLevelMeasuredSet || liveLoudnessLevelSet) {
           disableLoudness = PARAMLIST_DISABLELOUDNESS_OFF;
